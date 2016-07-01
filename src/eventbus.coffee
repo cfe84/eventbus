@@ -1,12 +1,13 @@
 class EventBus
 	constructor : (options) ->
-		@debug = options?.debug
-		@bus = []
-		@registrationId = 0
-		@id = 0
-		@getStack = () ->
-			stack = new Error().stack.split("\n")[3]
-			stack = stack.replace /^(.*)\/([^\/]+$)/i, "$2"
+    @debug = options?.debug
+    @log = options?.log ? console.log
+    @bus = []
+    @registrationId = 0
+    @id = 0
+    @getStack = () ->
+      stack = new Error().stack.split("\n")[3]
+      stack = stack.replace /^(.*)\/([^\/]+$)/i, "$2"
 
 	subscribe: (eventName, callback) =>
 		@bus[eventName] = [] unless @bus[eventName]
@@ -16,15 +17,15 @@ class EventBus
 			callback: callback
 			stack: stack
 			id: id
-		console.log "EventBus: (#{eventName}): new subscription - #{stack} (#{id})" if @debug
+		@log "EventBus: (#{eventName}): new subscription - #{stack} (#{id})" if @debug
 		id
 
 	publish: (eventName, parameter) =>
 		id = ++@id
-		console.log "EventBus: event #{id} (#{eventName}): published event #{eventName} from #{@getStack()}" if @debug
-		return console.log "EventBus: event #{id} (#{eventName}): no subscription" if @debug and !@bus[eventName]
+		@log "EventBus: event #{id} (#{eventName}): published event #{eventName} from #{@getStack()}" if @debug
+		return @log "EventBus: event #{id} (#{eventName}): no subscription" if @debug and !@bus[eventName]
 		for regid, callback of @bus[eventName]
-			console.log "EventBus: event #{id} (#{eventName}): calling #{callback.stack} (#{regid})" if @debug
+			@log "EventBus: event #{id} (#{eventName}): calling #{callback.stack} (#{regid})" if @debug
 			callback.callback
 				parameter: parameter
 				id: id
@@ -32,11 +33,11 @@ class EventBus
 				registrationid: regid
 
 	unsubscribe: (eventName, id) =>
-		return console.log "EventBus: (#{eventName}): has no subscription" if @debug and !@bus[eventName]
-		return console.log "EventBus: (#{eventName}): does not have a subscription with id #{id}" if @debug and !@bus[eventName]
+		return @log "EventBus: (#{eventName}): has no subscription" if @debug and !@bus[eventName]
+		return @log "EventBus: (#{eventName}): does not have a subscription with id #{id}" if @debug and !@bus[eventName]
 		reg = @bus[eventName][id]
 		delete @bus[eventName][id]
-		console.log "EventBus: (#{eventName}): subscription #{id} deleted (#{reg.stack})" if @debug
+		@log "EventBus: (#{eventName}): subscription #{id} deleted (#{reg.stack})" if @debug
 
 exports = this
 exports.EventBus = EventBus
