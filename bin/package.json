@@ -1,0 +1,25 @@
+{
+  "name": "choreobus",
+  "version": "1.0.0",
+  "description": "Eventbus",
+  "main": "eventbus.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfe84/eventbus.git"
+  },
+  "keywords": [
+    "event",
+    "eventbus",
+    "bus",
+    "choreography"
+  ],
+  "author": "Charles Feval",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cfe84/eventbus/issues"
+  },
+  "homepage": "https://github.com/cfe84/eventbus#readme"
+}
