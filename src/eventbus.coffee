@@ -39,5 +39,4 @@ class EventBus
 		delete @bus[eventName][id]
 		@log "EventBus: (#{eventName}): subscription #{id} deleted (#{reg.stack})" if @debug
 
-exports = this
-exports.EventBus = EventBus
+module.exports = EventBus
