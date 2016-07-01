@@ -1,5 +1,6 @@
 class EventBus
-	constructor : ({@debug} = options) ->
+	constructor : (options) ->
+		@debug = options?.debug
 		@bus = []
 		@registrationId = 0
 		@id = 0
@@ -18,9 +19,9 @@ class EventBus
 		console.log "EventBus: (#{eventName}): new subscription - #{stack} (#{id})" if @debug
 		id
 
-	trigger: (eventName, parameter) =>
+	publish: (eventName, parameter) =>
 		id = ++@id
-		console.log "EventBus: event #{id} (#{eventName}): triggered event #{eventName} from #{@getStack()}" if @debug
+		console.log "EventBus: event #{id} (#{eventName}): published event #{eventName} from #{@getStack()}" if @debug
 		return console.log "EventBus: event #{id} (#{eventName}): no subscription" if @debug and !@bus[eventName]
 		for regid, callback of @bus[eventName]
 			console.log "EventBus: event #{id} (#{eventName}): calling #{callback.stack} (#{regid})" if @debug
