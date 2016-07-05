@@ -1,6 +1,6 @@
 {
   "name": "choreobus",
-  "version": "VERSION",
+  "version": "%VERSION%",
   "description": "Eventbus that also supports the choreography pattern.",
   "main": "eventbus.js",
   "scripts": {
