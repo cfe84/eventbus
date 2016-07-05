@@ -8,6 +8,8 @@ OUTPUT="bin"
 
 ./clean.sh
 
+npm install
+
 echo "Building"
 
 [ ! -d "$OUTPUT" ] && mkdir "$OUTPUT"

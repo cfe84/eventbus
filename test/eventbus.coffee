@@ -1,4 +1,4 @@
-Test = require "./test"
+Test = require "mini-test"
 EventBus = require "../src/eventbus"
 
 EVENTNAME="blsfkdslfs"

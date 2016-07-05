@@ -5,4 +5,4 @@ echo "Building"
 
 echo "Running tests"
 
-coffee test/test_*.coffee
+coffee test/*.coffee
