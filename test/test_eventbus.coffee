@@ -6,6 +6,17 @@ EVENTNAME="blsfkdslfs"
 logs = []
 log = (message) => logs.push message
 
+noSubscriber = () ->
+  assert = Test "No subscriber"
+  bus = new EventBus
+    debug: true
+    log: log
+
+  obj = "1243"
+  bus.publish EVENTNAME, obj
+  (assert.that logs.length).compares ((length) -> length > 0), "No logs"
+noSubscriber()
+
 oneSubscriber = () ->
   assert = Test "One subscriber"
   bus = new EventBus
@@ -125,3 +136,26 @@ unsubscribing = () ->
   (assert.that res1.parameter.toto).is obj.toto
   (assert.that res1.parameter.pouet).is obj.pouet
 unsubscribing()
+
+exception = () ->
+  slogs = []
+  slog = (msg) -> slogs.push msg
+  assert = Test "Exception is logged and does not stop processing"
+  bus = new EventBus
+    debug: false
+    log: slog
+  res1 = null
+  res2 = null
+  EXCEPTION = "dfjhwoeurhwnv"
+  MSG = " dfsf s qwr efrs "
+  bus.subscribe EVENTNAME, (msg) -> res1 = msg
+  bus.subscribe EVENTNAME, (msg) -> throw EXCEPTION
+  bus.subscribe EVENTNAME, (msg) -> res2 = msg
+  bus.publish EVENTNAME, MSG
+  (assert.that res1.name).is EVENTNAME
+  (assert.that res1.parameter).is MSG
+  (assert.that res2.parameter).is MSG
+  (assert.that slogs.length).is 1
+  (assert.that slogs[0]).compares ((msg) -> msg.indexOf(EXCEPTION) >= 0), "Exception is not logged correctly"
+
+exception()

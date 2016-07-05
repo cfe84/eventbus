@@ -26,11 +26,14 @@ class EventBus
 		return @log "EventBus: event #{id} (#{eventName}): no subscription" if @debug and !@bus[eventName]
 		for regid, callback of @bus[eventName]
 			@log "EventBus: event #{id} (#{eventName}): calling #{callback.stack} (#{regid})" if @debug
-			callback.callback
-				parameter: parameter
-				id: id
-				name: eventName
-				registrationid: regid
+			try
+				callback.callback
+					parameter: parameter
+					id: id
+					name: eventName
+					registrationid: regid
+			catch exception
+				@log "EventBus: error while pushing event #{eventName} to #{callback.stack}: #{exception}"
 
 	unsubscribe: (eventName, id) =>
 		return @log "EventBus: (#{eventName}): has no subscription" if @debug and !@bus[eventName]
