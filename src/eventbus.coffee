@@ -1,7 +1,5 @@
 class EventBus
-	constructor : (options) ->
-    @debug = options?.debug
-    @log = options?.log ? console.log
+	constructor : ({@debug = false, @log = console.log}) ->
     @bus = []
     @registrationId = 0
     @id = 0
