@@ -159,3 +159,27 @@ exception = () ->
   (assert.that slogs[0]).compares ((msg) -> msg.indexOf(EXCEPTION) >= 0), "Exception is not logged correctly"
 
 exception()
+
+
+correlationId = () ->
+  assert = Test "Correlation Id"
+  bus = new EventBus
+    debug: false
+    log: log
+
+  res1 = undefined
+  res2 = undefined
+  obj1 =
+    toto: "stuff"
+    pouet: "lalala"
+  obj2 =
+    titi: "lalali"
+  bus.subscribe EVENTNAME, (param) ->
+    res1 = param
+    bus.publish EVENTNAME + "2eee", obj2, param.correlationId
+  bus.subscribe EVENTNAME + "2eee", (param) ->
+    res2 = param
+
+  bus.publish EVENTNAME, obj1
+  (assert.that res2.correlationId).is res1.correlationId
+correlationId()

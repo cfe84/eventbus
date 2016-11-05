@@ -18,7 +18,7 @@ class EventBus
 		@log "EventBus: (#{eventName}): new subscription - #{stack} (#{id})" if @debug
 		id
 
-	publish: (eventName, parameter) =>
+	publish: (eventName, parameter, correlationId = null) =>
 		id = ++@id
 		@log "EventBus: event #{id} (#{eventName}): published event #{eventName} from #{@getStack()}" if @debug
 		return @log "EventBus: event #{id} (#{eventName}): no subscription" if @debug and !@bus[eventName]
@@ -28,6 +28,7 @@ class EventBus
 				callback.callback
 					parameter: parameter
 					id: id
+					correlationId: correlationId ? id
 					name: eventName
 					registrationid: regid
 			catch exception
