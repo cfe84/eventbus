@@ -1,5 +1,6 @@
 class EventBus
-	constructor : ({@debug = false, @log = console.log}) ->
+	constructor : (options = {}) ->
+    { @debug = false, @rethrowExceptions = false, @log = (msg) -> console.log msg } = options
     @bus = []
     @registrationId = 0
     @id = 0
@@ -33,7 +34,8 @@ class EventBus
 					name: eventName
 					registrationid: regid
 			catch exception
-				@log "EventBus: error while pushing event #{eventName} to #{callback.stack}: #{exception}"
+        @log "EventBus: error while pushing event #{eventName} to #{callback.stack}: #{exception}"
+        throw exception if @rethrowExceptions
 
 	unsubscribe: (eventName, id) =>
 		return @log "EventBus: (#{eventName}): has no subscription" if @debug and !@bus[eventName]

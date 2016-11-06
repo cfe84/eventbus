@@ -157,8 +157,35 @@ exception = () ->
   (assert.that res2.parameter).is MSG
   (assert.that slogs.length).is 1
   (assert.that slogs[0]).compares ((msg) -> msg.indexOf(EXCEPTION) >= 0), "Exception is not logged correctly"
-
 exception()
+
+exception_rethrow = () ->
+  slogs = []
+  slog = (msg) -> slogs.push msg
+  assert = Test "Exception is rethrown if configured to do so"
+  bus = new EventBus
+    debug: false
+    log: slog
+    rethrowExceptions: true
+  res1 = null
+  res2 = null
+  exc = null
+  EXCEPTION = "dfjhwoeurhwnv"
+  MSG = " dfsf s qwr efrs "
+  bus.subscribe EVENTNAME, (msg) -> res1 = msg
+  bus.subscribe EVENTNAME, (msg) -> throw EXCEPTION
+  bus.subscribe EVENTNAME, (msg) -> res2 = msg
+  try
+    bus.publish EVENTNAME, MSG
+  catch exception
+    exc = exception
+  (assert.that res1.name).is EVENTNAME
+  (assert.that res1.parameter).is MSG
+  (assert.that res2).is null
+  (assert.that exc).is EXCEPTION
+  (assert.that slogs.length).is 1
+  (assert.that slogs[0]).compares ((msg) -> msg.indexOf(EXCEPTION) >= 0), "Exception is not logged correctly"
+exception_rethrow()
 
 
 correlationId = () ->

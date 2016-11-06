@@ -3,8 +3,10 @@
 ```coffeescript
 Bus = require "choreobus"
 bus = new Bus
-  debug: true           # Optional
-  logger: console.log   #Optional
+  debug: true                       # Optional - log stuff into the console to debug event path
+  logger: (msg) -> console.log msg  # Optional - where to log stuff
+  rethrowExceptions: false          # Optional - rethrow exceptions to facilitate debugging (will stop further event
+                                    # processing
 
 subscriptionId = bus.subscribe "event name", (event) -> console.log event.parameter
 bus.publish "event name", "Hurray!"
