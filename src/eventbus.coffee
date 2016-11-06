@@ -20,15 +20,16 @@ class EventBus
 
 	publish: (eventName, parameter, correlationId = null) =>
 		id = ++@id
-		@log "EventBus: event #{id} (#{eventName}): published event #{eventName} from #{@getStack()}" if @debug
+		correlationId = correlationId ? id
+		@log "EventBus: ##{correlationId} event #{id} (#{eventName}): published event #{eventName} from #{@getStack()}" if @debug
 		return @log "EventBus: event #{id} (#{eventName}): no subscription" if @debug and !@bus[eventName]
 		for regid, callback of @bus[eventName]
-			@log "EventBus: event #{id} (#{eventName}): calling #{callback.stack} (#{regid})" if @debug
+			@log "EventBus: ##{correlationId} - event #{id} (#{eventName}): calling #{callback.stack} (#{regid})" if @debug
 			try
 				callback.callback
 					parameter: parameter
 					id: id
-					correlationId: correlationId ? id
+					correlationId: correlationId
 					name: eventName
 					registrationid: regid
 			catch exception
