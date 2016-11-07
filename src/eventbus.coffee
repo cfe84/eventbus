@@ -5,7 +5,7 @@ class EventBus
     @registrationId = 0
     @id = 0
     @getStack = () ->
-      stack = new Error().stack.split("\n")[3]
+      stack = new Error().stack.split("\n")[4]
       stack = stack.replace /^(.*)\/([^\/]+$)/i, "$2"
 
 	subscribe: (eventName, callback) =>
@@ -23,7 +23,7 @@ class EventBus
 		id = ++@id
 		correlationId = correlationId ? id
 		@log "EventBus: ##{correlationId} event #{id} (#{eventName}): published event #{eventName} from #{@getStack()}" if @debug
-		return @log "EventBus: event #{id} (#{eventName}): no subscription" if @debug and !@bus[eventName]
+		return @log "EventBus: ##{correlationId} - event #{id} (#{eventName}): no subscription" if @debug and !@bus[eventName]
 		for regid, callback of @bus[eventName]
 			@log "EventBus: ##{correlationId} - event #{id} (#{eventName}): calling #{callback.stack} (#{regid})" if @debug
 			try
@@ -34,7 +34,7 @@ class EventBus
 					name: eventName
 					registrationid: regid
 			catch exception
-        @log "EventBus: error while pushing event #{eventName} to #{callback.stack}: #{exception}"
+        @log "EventBus: ##{correlationId} - event #{id}: error while pushing event #{eventName} to #{callback.stack}: #{exception}"
         throw exception if @rethrowExceptions
 
 	unsubscribe: (eventName, id) =>
