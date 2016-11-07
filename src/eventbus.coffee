@@ -16,8 +16,8 @@ class EventBus
       callback: callback
       stack: stack
       id: regid
-      description: description ? "calling #{callback.stack} (#{regid})"
-		@log "EventBus: (#{eventName}): new subscription - #{stack} (#{regid})" if @debug
+      description: description ? "calling #{stack} (#{regid})"
+		@log "EventBus: (#{eventName}): new subscription - #{description ? stack} (#{regid})" if @debug
 		regid
 
 	publish: (eventName, parameter, correlationId = null) =>
