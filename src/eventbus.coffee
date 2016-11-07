@@ -8,16 +8,17 @@ class EventBus
       stack = new Error().stack.split("\n")[4]
       stack = stack.replace /^(.*)\/([^\/]+$)/i, "$2"
 
-	subscribe: (eventName, callback) =>
+	subscribe: (eventName, callback, description) =>
 		@bus[eventName] = [] unless @bus[eventName]
-		id = "reg-#{@registrationId++}"
+		regid = "reg-#{@registrationId++}"
 		stack = if @debug then @getStack() else "Activate debug to access stacktrace"
-		@bus[eventName][id] = 
-			callback: callback
-			stack: stack
-			id: id
-		@log "EventBus: (#{eventName}): new subscription - #{stack} (#{id})" if @debug
-		id
+		@bus[eventName][regid] =
+      callback: callback
+      stack: stack
+      id: regid
+      description: description ? "calling #{callback.stack} (#{regid})"
+		@log "EventBus: (#{eventName}): new subscription - #{stack} (#{regid})" if @debug
+		regid
 
 	publish: (eventName, parameter, correlationId = null) =>
 		id = ++@id
@@ -25,7 +26,7 @@ class EventBus
 		@log "EventBus: ##{correlationId} event #{id} (#{eventName}): published event #{eventName} from #{@getStack()}" if @debug
 		return @log "EventBus: ##{correlationId} - event #{id} (#{eventName}): no subscription" if @debug and !@bus[eventName]
 		for regid, callback of @bus[eventName]
-			@log "EventBus: ##{correlationId} - event #{id} (#{eventName}): calling #{callback.stack} (#{regid})" if @debug
+			@log "EventBus: ##{correlationId} - event #{id} (#{eventName}): #{callback.description}" if @debug
 			try
 				callback.callback
 					parameter: parameter
